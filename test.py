@@ -1,6 +1,8 @@
+# coding: utf-8
+
 import dpkt
 
-with open("pop3.pcap", "r", encoding = "ISO-8859-1") as f:
+with open("pop3.pcap", "rb") as f:
 	pcap = dpkt.pcap.Reader(f)
 
 	for ts, buf in pcap:
