@@ -13,6 +13,8 @@
 
 ## Lib
 
-libpcap
+pip3 install libpcap
+pip3 install dpkt
+
 https://pypi.python.org/pypi/libpcap
 https://github.com/kbandla/dpkt
