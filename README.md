@@ -15,3 +15,4 @@
 
 libpcap
 https://pypi.python.org/pypi/libpcap
+https://github.com/kbandla/dpkt
