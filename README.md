@@ -2,8 +2,8 @@
 
 ## Comment lancer
 
-make
-make run
+* make
+* make run
 
 ## Lib
 
