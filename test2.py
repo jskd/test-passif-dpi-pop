@@ -1,14 +1,16 @@
 # coding: utf-8
 #
-#
-#
-#
+# Equipe:
+# - Egor KOCHKUROV
+# - Joaquim LEFRANC
+# - Jérôme SKODA
 #
 # Inspiration :
 # - https://dpkt.readthedocs.io/en/latest/print_http_requests.html
 # - https://fr.wikipedia.org/wiki/Post_Office_Protocol
 # - https://dpkt.readthedocs.io/en/latest/_modules/examples/print_icmp.html#mac_addr
 # - https://docs.python.org/2/howto/argparse.html
+#
 import dpkt
 import struct
 import datetime
@@ -176,15 +178,18 @@ def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
 
   f.close()
 
+def main():
+  parser = argparse.ArgumentParser(description='Petit DPI sur le protocole POP')
+  parser.add_argument('-i',   '--input', help='Input file name',  required=True, type=str)
+  parser.add_argument('-a',   '--all',   help='Display all data', action="store_true")
+  parser.add_argument('-t',   '--time',  help='Display time',     action="store_true")
+  parser.add_argument('-eth',            help='Display eth data', action="store_true")
+  parser.add_argument('-ip',             help='Display ip data',  action="store_true")
+  parser.add_argument('-tcp',            help='Display tcp data', action="store_true")
+  args = parser.parse_args()
+  dpi_pop( args.input , args.time or args.all, args.eth or args.all, args.ip or args.all, args.tcp or args.all)
 
-parser = argparse.ArgumentParser(description='Miniscript de dpi sur le protocole POP')
-parser.add_argument('-i',   '--input', help='Input file name',  required=True, type=str)
-parser.add_argument('-a',   '--all',   help='Display all data', action="store_true")
-parser.add_argument('-t',   '--time',  help='Display time',     action="store_true")
-parser.add_argument('-eth',            help='Display eth data', action="store_true")
-parser.add_argument('-ip',             help='Display ip data',  action="store_true")
-parser.add_argument('-tcp',            help='Display tcp data', action="store_true")
-args = parser.parse_args()
+if __name__ == "__main__":
+  main()
 
-
-dpi_pop( args.input , args.time or args.all, args.eth or args.all, args.ip or args.all, args.tcp or args.all)
+# TERMINE BONNE FETE DE FIN D'ANNEE
