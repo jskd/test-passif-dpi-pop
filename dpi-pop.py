@@ -126,7 +126,7 @@ def parse_and_print_pop(data):
     ("[POP-S] ERR ", r"-ERR(.*)",
       "Erreur {value}", print_string),
     ("[DATA]      ", r"(.*)",
-      "(Premiere ligne) {value}", print_string)
+      "(option -data pour le contenu complet) line 1: {value}", print_string)
   ]
 
   for label, regex, message, methode in commandes:
@@ -135,7 +135,7 @@ def parse_and_print_pop(data):
       methode(label, message, matches)
       break;
 
-def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
+def dpi_pop(filename, d_time, d_ether, d_ip, d_data):
   with open(filename, "rb") as f:
     pcap = dpkt.pcap.Reader(f)
 
@@ -173,9 +173,9 @@ def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
             print_ether_frame(eth)
           if d_ip:
             print_tcp_ip(ip)
-          if d_tcp:
+          if d_data:
             print_data(tcp)
-          if d_time or d_ether or d_ip or d_tcp:
+          if d_time or d_ether or d_ip or d_data:
             print()
 
   f.close()
@@ -187,9 +187,9 @@ def main():
   parser.add_argument('-t',   '--time',  help='Display time',     action="store_true")
   parser.add_argument('-eth',            help='Display eth data', action="store_true")
   parser.add_argument('-ip',             help='Display ip data',  action="store_true")
-  parser.add_argument('-tcp',            help='Display tcp data', action="store_true")
+  parser.add_argument('-data',           help='Display tcp data', action="store_true")
   args = parser.parse_args()
-  dpi_pop( args.input , args.time or args.all, args.eth or args.all, args.ip or args.all, args.tcp or args.all)
+  dpi_pop( args.input , args.time or args.all, args.eth or args.all, args.ip or args.all, args.data or args.all)
 
 if __name__ == "__main__":
   main()

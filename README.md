@@ -15,7 +15,7 @@ optional arguments:
   -t, --time            Display time
   -eth                  Display eth data
   -ip                   Display ip data
-  -tcp                  Display tcp data
+  -data                  Display tcp data
 ```
 
 ## Exemple d'utilisation
