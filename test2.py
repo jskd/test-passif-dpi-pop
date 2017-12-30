@@ -107,7 +107,7 @@ def parse_pop(data):
       "Ok {value}", print_string),
     ("[POP-S] ERR ", r"-ERR(.*)",
       "Erreur {value}", print_string),
-    ("[DATA]", r"(.*)",
+    ("[DATA]      ", r"(.*)",
       "(Premiere ligne) {value}", print_string)
   ]
 
