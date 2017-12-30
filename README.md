@@ -1,8 +1,8 @@
 # test-passif-dpi
 
-Petit DPI sur le protocole POP
+Script de DPI sur le protocole POP
 
-## Comment lancer
+## Usage
 
 ```
 usage: dpi-pop.py [-h] -i INPUT [-a] [-t] [-eth] [-ip] [-tcp]

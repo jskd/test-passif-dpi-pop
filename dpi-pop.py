@@ -1,5 +1,7 @@
 # coding: utf-8
 #
+# Script de DPI sur le protocole POP
+#
 # Equipe:
 # - Egor KOCHKUROV
 # - Joaquim LEFRANC
@@ -179,7 +181,7 @@ def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
   f.close()
 
 def main():
-  parser = argparse.ArgumentParser(description='Petit DPI sur le protocole POP')
+  parser = argparse.ArgumentParser(description='Script de DPI sur le protocole POP')
   parser.add_argument('-i',   '--input', help='Input file name',  required=True, type=str)
   parser.add_argument('-a',   '--all',   help='Display all data', action="store_true")
   parser.add_argument('-t',   '--time',  help='Display time',     action="store_true")
