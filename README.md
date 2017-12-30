@@ -16,8 +16,8 @@ optional arguments:
   -ip                   Display ip data
   -tcp                  Display tcp data
 
+## Exemple d'utilisation
 
-Exemple:
 * python3 dpi-pop.py -i pop3-sample-1.pcap
 * python3 dpi-pop.py -i pop3-sample-2.pcap --all
 
@@ -27,14 +27,7 @@ Exemple:
 * Joaquim LEFRANC
 * Jérôme SKODA
 
-## Lib
+## Paquet python requis
 
-pip3 install libpcap
-pip3 install dpkt
-
-https://pypi.python.org/pypi/libpcap
-https://github.com/kbandla/dpkt
-
-Examples parsing DPKT:
-
-https://jon.oberheide.org/blog/2008/10/15/dpkt-tutorial-2-parsing-a-pcap-file/
+* pip3 install libpcap
+* pip3 install dpkt
