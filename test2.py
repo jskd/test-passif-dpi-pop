@@ -56,38 +56,51 @@ def print_tcp_data(timestamp, ip, eth, tcp):
   print ('IP:       %s -> %s (len=%d ttl=%d DF=%d MF=%d offset=%d)' % \
     (inet_to_str(ip.src), inet_to_str(ip.dst), ip.len, ip.ttl, do_not_fragment, more_fragments, fragment_offset))
 
-
-
-
-
-
-
-
-
-
 # based on https://fr.wikipedia.org/wiki/Post_Office_Protocol
 def parse_pop(data):
 
+  simple_print  = lambda label, message, matches:   print("%s" % label, ":", message )
+  print_N_mess = lambda label, message, matches:   print("%s" % label, ":",  message.replace("{n_mess}", str(int(matches.group(1), 10))  ))
+  print_TOP = lambda label, message, matches:   print("%s" % label, ":", message.replace("{n_mess}", str(int(matches.group(1), 10))  ).replace("{n_ligne}", str(int(matches.group(2), 10))  ))
+  print_str = lambda label, message, matches:   print("%s" %  label, ":", message.replace("{value}", str(matches.group(1))))
+
   commandes = [
-    (b"DELE", "efface le message spécifié"),
-    (b"LIST", "donne une liste des messages ainsi que la taille de chaque message : un numéro suivi de la taille en octets ;"),
-    (b"RETR", "récupère le message indiqué"),
-    (b"STAT", " indique le nombre de messages et la taille occupée par l'ensemble des messages"),
-    (b"TOP", "affiche les premières lignes du message."),
-    (b"APOP", "permet une authentification sécurisée (le mot de passe ne transite pas en clair)"),
-    (b"NOOP", "ne rien faire, utile pour ne pas perdre la connexion et éviter un « délai d'attente dépassé »"),
-    (b"QUIT", "quitter la session en cours"),
-    (b"RSET", "réinitialise complètement la session"),
-    (b"UIDL", "affiche (pour un seul ou pour tous les messages) un identifiant unique qui ne varie pas entre chaque session"),
-    (b"CAPA", "affiche les informations du serveur"),
+    ("[POP] USER", b"USER (.+)",
+      "identification {value}", print_str),
+    ("[POP] PASS", b"PASS (.+)",
+      "authentification {value}", print_str),
+    ("[POP] DELE", b"DELE (\d)",
+      "efface le message spécifié", print_N_mess),
+    ("[POP] LIST", b"LIST",
+      "donne une liste des messages ainsi que la taille de chaque message : un numéro suivi de la taille en octets ;", simple_print),
+    ("[POP] RETR", b"RETR (\d)",
+      "récupère le message {n_mess}", print_N_mess),
+    ("[POP] STAT", b"STAT",
+      "indique le nombre de messages et la taille occupée par l'ensemble des messages", simple_print),
+    ("[POP] TOP ", b"TOP (\d) (\d)",
+      "affiche les {n_ligne} premières lignes du message {n_mess}.", print_TOP),
+    ("[POP] APOP", b"APOP",
+      "permet une authentification sécurisée (le mot de passe ne transite pas en clair)", simple_print),
+    ("[POP] NOOP", b"NOOP",
+      "ne rien faire, utile pour ne pas perdre la connexion et éviter un « délai d'attente dépassé »", simple_print),
+    ("[POP] QUIT", b"QUIT",
+      "quitter la session en cours", simple_print),
+    ("[POP] RSET", b"RSET",
+      "réinitialise complètement la session", simple_print),
+    ("[POP] UIDL", b"UIDL",
+      "affiche (pour un seul ou pour tous les messages) un identifiant unique qui ne varie pas entre chaque session", simple_print),
+    ("[POP] CAPA", b"CAPA",
+      "affiche les informations du serveur", simple_print),
   ]
 
 
-  for regex, message in commandes:
+
+  for label, regex, message, methode in commandes:
     matches = re.search(regex, data)
     if matches:
-      print("[POP] %s" % regex.decode("utf-8"), ":", message )
+      methode(label, message, matches)
       break;
+    #print(data)
 
 
 
@@ -96,7 +109,7 @@ def parse_pop(data):
   regex = b"RETR (\d)"
   matches = re.search(regex, data)
   if matches:
-    print("[POP] récupère le message %s" % int(matches.group(1), 10) )
+    print("[POP] récupère le message %s" %  )
 '''
 
 
@@ -138,4 +151,4 @@ def dpi_pop(filename):
 
 
 
-dpi_pop("pop3.pcap")
+dpi_pop("pop3-2.pcap")
