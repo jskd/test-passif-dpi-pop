@@ -1,20 +1,18 @@
 # coding: utf-8
-
-# Inspiration : https://dpkt.readthedocs.io/en/latest/print_http_requests.html
-
+# Inspiration :
+# - https://dpkt.readthedocs.io/en/latest/print_http_requests.html
+# - https://fr.wikipedia.org/wiki/Post_Office_Protocol
+# - https://dpkt.readthedocs.io/en/latest/_modules/examples/print_icmp.html#mac_addr
 import dpkt
 import struct
 import datetime
-
 import re
-
 import dpkt
 import datetime
 import socket
+import sys, getopt
 from dpkt.compat import compat_ord
 
-
-# https://dpkt.readthedocs.io/en/latest/_modules/examples/print_icmp.html#mac_addr
 def mac_addr(address):
   """Convert a MAC address to a readable/printable string
 
@@ -25,7 +23,6 @@ def mac_addr(address):
   """
   return ':'.join('%02x' % compat_ord(b) for b in address)
 
-# https://dpkt.readthedocs.io/en/latest/_modules/examples/print_icmp.html#mac_addr
 def inet_to_str(inet):
   """Convert inet object to a string
 
@@ -41,18 +38,26 @@ def inet_to_str(inet):
     return socket.inet_ntop(socket.AF_INET6, inet)
 
 def print_timestamp(timestamp):
+  """Print timestamp
+  """
   print ('  Timestamp  : %s' % \
     (str(datetime.datetime.utcfromtimestamp(timestamp))))
 
 def print_data(tcp):
+  """ Print data of tcp
+  """
   print ('  Data       : %s' % \
     (str(tcp.data)))
 
 def print_ether_frame(eth):
+  """ Print ethernet frame
+  """
   print ('  Ether Frame: %s -> %s (%s)' % \
     (mac_addr(eth.src), mac_addr(eth.dst), eth.type))
 
 def print_tcp_ip(ip):
+  """ Print ip
+  """
   # Pull out fragment information (flags and offset all packed into off field, so use bitmasks)
   do_not_fragment = bool(ip.off & dpkt.ip.IP_DF)
   more_fragments = bool(ip.off & dpkt.ip.IP_MF)
@@ -60,13 +65,10 @@ def print_tcp_ip(ip):
   print ('  IP         : %s -> %s (len=%d ttl=%d DF=%d MF=%d offset=%d)' % \
     (inet_to_str(ip.src), inet_to_str(ip.dst), ip.len, ip.ttl, do_not_fragment, more_fragments, fragment_offset))
 
-def remove_rneescape(str):
-  return str.replace("\\r", "\r").replace("\\n", "\n")
-
-
-# based on https://fr.wikipedia.org/wiki/Post_Office_Protocol
-def parse_pop(data):
-
+def parse_and_print_pop(data):
+  """ Parse and print POP3 protocole
+      Based on: https://fr.wikipedia.org/wiki/Post_Office_Protocol
+  """
   # rn escape
   data= str(data, 'utf-8').rstrip();
 
@@ -147,7 +149,7 @@ def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
         if len(tcp.data) > 0:
 
           try:
-            parse_pop(tcp.data)
+            parse_and_print_pop(tcp.data)
 
           except:
             print("[FAIL] DPI POP ERROR")
@@ -166,4 +168,4 @@ def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
 
   f.close()
 
-dpi_pop("pop3.pcap", True, True, False, False)
+dpi_pop("pop3.pcap", True, True, True, False)
