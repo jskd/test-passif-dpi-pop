@@ -121,7 +121,7 @@ def parse_pop(data):
       methode(label, message, matches)
       break;
 
-def dpi_pop(filename):
+def dpi_pop(filename, d_time, d_ether, d_ip, d_tcp):
   with open(filename, "rb") as f:
     pcap = dpkt.pcap.Reader(f)
 
@@ -148,20 +148,22 @@ def dpi_pop(filename):
 
           try:
             parse_pop(tcp.data)
-            print_timestamp(timestamp)
-            print_ether_frame(eth)
-            print_tcp_ip(ip)
-            print_data(tcp)
-            print()
 
           except:
+            print("[FAIL] DPI POP ERROR")
             pass
 
-
-
+          if d_time:
+            print_timestamp(timestamp)
+          if d_ether:
+            print_ether_frame(eth)
+          if d_ip:
+            print_tcp_ip(ip)
+          if d_tcp:
+            print_data(tcp)
+          if d_time or d_ether or d_ip or d_tcp:
+            print()
 
   f.close()
 
-
-
-dpi_pop("pop3-2.pcap")
+dpi_pop("pop3.pcap", True, True, False, False)
