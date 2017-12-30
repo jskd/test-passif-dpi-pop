@@ -40,20 +40,24 @@ def inet_to_str(inet):
   except ValueError:
     return socket.inet_ntop(socket.AF_INET6, inet)
 
-def print_tcp_data(timestamp, ip, eth, tcp):
+def print_timestamp(timestamp):
+  print ('  Timestamp  : %s' % \
+    (str(datetime.datetime.utcfromtimestamp(timestamp))))
 
+def print_data(tcp):
+  print ('  Data       : %s' % \
+    (str(tcp.data)))
+
+def print_ether_frame(eth):
+  print ('  Ether Frame: %s -> %s (%s)' % \
+    (mac_addr(eth.src), mac_addr(eth.dst), eth.type))
+
+def print_tcp_ip(ip):
   # Pull out fragment information (flags and offset all packed into off field, so use bitmasks)
   do_not_fragment = bool(ip.off & dpkt.ip.IP_DF)
   more_fragments = bool(ip.off & dpkt.ip.IP_MF)
   fragment_offset = ip.off & dpkt.ip.IP_OFFMASK
-
-  print ('Data:       %s' % \
-    (str(tcp.data)))
-  print ('Timestamp:    %s' % \
-    (str(datetime.datetime.utcfromtimestamp(timestamp))))
-  print ('Ethernet Frame: %s -> %s (%s)' % \
-    (mac_addr(eth.src), mac_addr(eth.dst), eth.type))
-  print ('IP:       %s -> %s (len=%d ttl=%d DF=%d MF=%d offset=%d)' % \
+  print ('  IP         : %s -> %s (len=%d ttl=%d DF=%d MF=%d offset=%d)' % \
     (inet_to_str(ip.src), inet_to_str(ip.dst), ip.len, ip.ttl, do_not_fragment, more_fragments, fragment_offset))
 
 def remove_rneescape(str):
@@ -144,8 +148,12 @@ def dpi_pop(filename):
 
           try:
             parse_pop(tcp.data)
-            #print_tcp_data(timestamp, ip, eth, tcp)
-            #print()
+            print_timestamp(timestamp)
+            print_ether_frame(eth)
+            print_tcp_ip(ip)
+            print_data(tcp)
+            print()
+
           except:
             pass
 
